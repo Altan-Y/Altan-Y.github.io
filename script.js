@@ -8,6 +8,32 @@
   const sections = [...document.querySelectorAll('main section[id]')];
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  const projectGalleries = [
+    {
+      src: 'https://raw.githubusercontent.com/Altan-Y/access-governance-dashboard/main/screenshots/accesshub-gallery.webp',
+      alt: 'AccessHub product gallery with login, dashboard and permission-aware job-role management',
+    },
+    {
+      src: 'https://raw.githubusercontent.com/Altan-Y/interactive-employee-onboarding/main/screenshots/onboarding-gallery.webp',
+      alt: 'Interactive Employee Onboarding gallery with access, flow selection, tutorial and setup instructions',
+    },
+  ];
+
+  [...document.querySelectorAll('.project-card')].slice(0, 2).forEach((card, index) => {
+    const visual = card.querySelector('.project-visual');
+    const image = visual?.querySelector('img');
+    const gallery = projectGalleries[index];
+    if (!visual || !image || !gallery) return;
+
+    image.src = gallery.src;
+    image.alt = gallery.alt;
+    image.style.aspectRatio = '4 / 3';
+    image.style.objectFit = 'contain';
+    image.style.objectPosition = 'center';
+    image.style.background = '#07182b';
+    visual.style.background = '#07182b';
+  });
+
   const setMenu = (open) => {
     if (!menu || !menuToggle) return;
     menu.classList.toggle('is-open', open);
