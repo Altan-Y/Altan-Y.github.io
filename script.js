@@ -10,28 +10,79 @@
 
   const projectGalleries = [
     {
-      src: 'https://raw.githubusercontent.com/Altan-Y/access-governance-dashboard/main/screenshots/accesshub-gallery.webp',
-      alt: 'AccessHub product gallery with login, dashboard and permission-aware job-role management',
+      hero: 'https://raw.githubusercontent.com/Altan-Y/access-governance-dashboard/main/screenshots/accesshub-gallery.webp',
+      heroAlt: 'AccessHub product gallery with login, dashboard and permission-aware job-role management',
+      screenshots: [
+        ['https://raw.githubusercontent.com/Altan-Y/access-governance-dashboard/main/screenshots/accesshub-login.webp', 'AccessHub demo login'],
+        ['https://raw.githubusercontent.com/Altan-Y/access-governance-dashboard/main/screenshots/accesshub-dashboard.webp', 'AccessHub dashboard'],
+        ['https://raw.githubusercontent.com/Altan-Y/access-governance-dashboard/main/screenshots/accesshub-job-roles.webp', 'AccessHub job-role management'],
+      ],
     },
     {
-      src: 'https://raw.githubusercontent.com/Altan-Y/interactive-employee-onboarding/main/screenshots/onboarding-gallery.webp',
-      alt: 'Interactive Employee Onboarding gallery with access, flow selection, tutorial and setup instructions',
+      hero: 'https://raw.githubusercontent.com/Altan-Y/interactive-employee-onboarding/main/screenshots/onboarding-gallery.webp',
+      heroAlt: 'Interactive Employee Onboarding gallery with access, flow selection, tutorial and setup instructions',
+      screenshots: [
+        ['https://raw.githubusercontent.com/Altan-Y/interactive-employee-onboarding/main/screenshots/onboarding-access.webp', 'Onboarding protected access'],
+        ['https://raw.githubusercontent.com/Altan-Y/interactive-employee-onboarding/main/screenshots/onboarding-device-selection.webp', 'Onboarding device selection'],
+        ['https://raw.githubusercontent.com/Altan-Y/interactive-employee-onboarding/main/screenshots/onboarding-tutorial.webp', 'Onboarding tutorial'],
+        ['https://raw.githubusercontent.com/Altan-Y/interactive-employee-onboarding/main/screenshots/onboarding-password-step.webp', 'Onboarding setup instruction'],
+      ],
+    },
+    {
+      hero: 'https://raw.githubusercontent.com/Altan-Y/freshservice-asset-context-demo/main/screenshots/ticket-context.webp',
+      heroAlt: 'Freshservice-style service ticket preview with an asset context widget',
+      screenshots: [
+        ['https://raw.githubusercontent.com/Altan-Y/freshservice-asset-context-demo/main/screenshots/ticket-context.webp', 'Service ticket with asset context'],
+        ['https://raw.githubusercontent.com/Altan-Y/freshservice-asset-context-demo/main/screenshots/asset-card-original-style.webp', 'Compact original-style asset card'],
+      ],
     },
   ];
 
-  [...document.querySelectorAll('.project-card')].slice(0, 2).forEach((card, index) => {
+  const galleryStyle = document.createElement('style');
+  galleryStyle.textContent = `
+    .project-gallery-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:9px;margin:0 0 27px}
+    .project-gallery-strip a{display:block;overflow:hidden;background:#07182b;border:1px solid rgba(194,213,232,.16);border-radius:5px;transition:transform 160ms ease,border-color 160ms ease}
+    .project-gallery-strip a:hover{transform:translateY(-3px);border-color:rgba(213,177,108,.72)}
+    .project-gallery-strip img{display:block;width:100%;height:82px;object-fit:cover;object-position:top center}
+    @media(max-width:560px){.project-gallery-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.project-gallery-strip img{height:96px}}
+  `;
+  document.head.appendChild(galleryStyle);
+
+  [...document.querySelectorAll('.project-card')].forEach((card, index) => {
     const visual = card.querySelector('.project-visual');
     const image = visual?.querySelector('img');
-    const gallery = projectGalleries[index];
-    if (!visual || !image || !gallery) return;
+    const data = projectGalleries[index];
+    if (!visual || !image || !data) return;
 
-    image.src = gallery.src;
-    image.alt = gallery.alt;
-    image.style.aspectRatio = '4 / 3';
-    image.style.objectFit = 'contain';
-    image.style.objectPosition = 'center';
+    image.src = data.hero;
+    image.alt = data.heroAlt;
+    image.style.aspectRatio = index < 2 ? '4 / 3' : '16 / 9';
+    image.style.objectFit = index < 2 ? 'contain' : 'cover';
+    image.style.objectPosition = 'top center';
     image.style.background = '#07182b';
     visual.style.background = '#07182b';
+
+    const strip = document.createElement('div');
+    strip.className = 'project-gallery-strip';
+    strip.setAttribute('aria-label', 'Project screenshots');
+
+    data.screenshots.forEach(([src, alt]) => {
+      const link = document.createElement('a');
+      link.href = src;
+      link.target = '_blank';
+      link.rel = 'noreferrer';
+      link.setAttribute('aria-label', `Open ${alt}`);
+
+      const thumbnail = document.createElement('img');
+      thumbnail.src = src;
+      thumbnail.alt = alt;
+      thumbnail.loading = 'lazy';
+      link.appendChild(thumbnail);
+      strip.appendChild(link);
+    });
+
+    const projectLink = card.querySelector('.text-link');
+    projectLink?.before(strip);
   });
 
   const setMenu = (open) => {
